@@ -537,8 +537,7 @@ You can edit `.cfg` files directly on your computer:
 **Manual Version:** 1.0
 **Last Updated:** 2025
 
-For support, bug reports, or feature requests, please contact the manufacturer or visit the project repository.
-
 ---
 
 **End of Manual**
+
