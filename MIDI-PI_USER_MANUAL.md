@@ -16,7 +16,7 @@
 
 ## Introduction
 
-The MIDI-PI is a portable hardware MIDI file player based on the Raspberry Pi Pico. It plays standard MIDI files (.mid, .midi) from an SD card and outputs MIDI data to external synthesizers, sound modules, or MIDI interfaces.
+The MIDI-PI is a portable, standalone hardware MIDI file player designed for musicians, synthesizer enthusiasts, and performers who need reliable playback of MIDI sequences without a computer. Built around the Raspberry Pi Pico microcontroller, this compact device reads standard MIDI files from an SD card and sends MIDI data to your synthesizers, sound modules, drum machines, or any MIDI-compatible equipment. Whether you're performing live, testing MIDI files, controlling vintage synthesizers, or simply playing back your MIDI compositions, the MIDI-PI provides a dedicated, purpose-built solution with professional features like per-file settings memory, real-time mixing control, and precise MIDI timing. It's perfect for anyone who wants the convenience of computer-based MIDI playback in a small, affordable, and easy-to-use hardware package that works anywhere—no laptop required.
 
 ### Key Features
 - Standard MIDI file playback (Type 0 and Type 1)
@@ -37,10 +37,12 @@ The MIDI-PI is a portable hardware MIDI file player based on the Raspberry Pi Pi
 - **UP/DOWN** - Navigate menus, select files, scroll options
 - **LEFT/RIGHT** - Adjust values, navigate options horizontally
 - **OK** - Confirm selection, activate/deactivate editing mode
+  - **Hold OK for 2 seconds** - Reset BPM or Velocity to default (when option is active)
 - **PLAY** - Start/resume playback
 - **STOP** - Stop playback
 - **PAUSE** - Pause playback (press PLAY to resume)
 - **MODE** - Cycle through different screens and menus
+  - **Hold MODE for 2 seconds** - Jump directly to main playback screen from anywhere
 - **PANIC** - Send "All Notes Off" to all channels (emergency stop)
 
 ---
@@ -89,10 +91,12 @@ Navigate with LEFT/RIGHT, activate with OK:
 
 1. **TRACK** - Press OK to open file browser
 2. **BPM** - Adjust tempo by ±1 BPM (adjusts tempo percentage to match)
+   - **Hold OK for 2 seconds** - Reset tempo to 100% (default)
 3. **VELOCITY** - Adjust global velocity scale (1-100)
    - Values below 50: Quieter/softer notes
    - 50: Normal MIDI velocity (default)
    - Values above 50: Louder/harder notes
+   - **Hold OK for 2 seconds** - Reset to config value (or 50 if no config)
 4. **TIME** - Fast forward/rewind 1 second per button press
 5. **MODE** - Change playback mode (SNG/NXT/LP1/LPA)
 
@@ -100,6 +104,8 @@ Navigate with LEFT/RIGHT, activate with OK:
 - **PLAY** while stopped - Resume last played file
 - **STOP + PLAY** - Reload current file settings and restart
 - **MODE button** - Cycle to Channel Settings menu
+- **Hold MODE for 2 seconds** - Jump to playback screen from any menu
+- **Hold OK for 2 seconds** - Reset active option to default (BPM or Velocity)
 - **PANIC button** - Send "All Notes Off" on all 16 channels
 
 ---
@@ -418,14 +424,21 @@ You can edit `.cfg` files directly on your computer:
 
 **Fast Navigation**
 - Press PLAY from file browser to load and play immediately
+- Hold MODE for 2 seconds to instantly return to playback screen
 - Use Auto-Next (NXT) mode for continuous playback
 - Use Loop All (LPA) mode for background music
 
 **Tempo Adjustments**
 - Tempo changes are temporary (not saved)
 - Reload file (STOP + PLAY) to reset tempo to 100%
+- Hold OK for 2 seconds on BPM option to reset to 100%
 - Use BPM control for fine adjustments (±1 BPM)
 - Use TIME for quick navigation during playback
+
+**Quick Reset Features**
+- Hold OK for 2 seconds on active BPM - Resets to 100%
+- Hold OK for 2 seconds on active Velocity - Resets to saved value or 50
+- Hold resets automatically deactivate the option for quick navigation
 
 **Testing Changes**
 - Use visualizer to verify channel activity
@@ -537,7 +550,8 @@ You can edit `.cfg` files directly on your computer:
 **Manual Version:** 1.0
 **Last Updated:** 2025
 
+For support, bug reports, or feature requests, please contact the manufacturer or visit the project repository.
+
 ---
 
 **End of Manual**
-
