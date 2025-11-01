@@ -246,7 +246,8 @@ Configure MIDI input behavior. Access by pressing MODE from Channel Settings.
 MIDI IN
 Thru:      [OFF]
 Keyboard:  [OFF]
-KB Ch:      1
+Kbd Ch:      1
+Kbd V:      50
 ```
 
 ### Options
@@ -264,8 +265,16 @@ KB Ch:      1
 - Keyboard channel: 1-16 (selectable)
 - Note: Thru and Keyboard modes are mutually exclusive
 
-**Keyboard Channel** (KB Ch)
+**Keyboard Channel** (Kbd Ch)
 - Selects which MIDI channel (1-16) keyboard notes are sent on
+- Only active when Keyboard mode is ON
+
+**Keyboard Velocity** (Kbd V)
+- Scales velocity of incoming MIDI keyboard notes (1-100)
+- **50** = Normal/default (no scaling)
+- Values below 50: Softer keyboard input
+- Values above 50: Louder keyboard input
+- Affects both MIDI output and visualizer display
 - Only active when Keyboard mode is ON
 
 ### Controls
@@ -329,15 +338,20 @@ Real-time 16-channel MIDI activity display. Access by pressing MODE from Clock S
 
 ### What It Shows
 - **16 columns** - One for each MIDI channel (1-16)
-- **Bar height** - Current note activity (velocity average)
-- **Peak indicator** - Highest recent activity (holds for 800ms)
+- **Bar height** - Current note velocity on that channel
+- **Peak indicator** - Highest recent velocity (holds for 800ms, then decays)
+- **Baseline markers** - Small dash at bottom of each channel
 
 ### Activity Detection
-- Bars respond to Note On messages
-- Height represents average velocity of active notes
-- Polyphonic notes are averaged together
-- Bars decay smoothly when notes end
-- Sensitivity scaled so max velocity reaches ~80% height
+- **Instant response** - Bars update immediately when notes are received
+- **Simple per-channel tracking** - Shows most recent note velocity per channel
+- **70% velocity scaling** - Prevents bars from maxing out too easily
+  - MIDI velocity 64 (medium) displays at ~35% bar height
+  - MIDI velocity 90 (loud) displays at ~50% bar height
+  - MIDI velocity 127 (max) displays at ~70% bar height
+- **Fast decay** - Bars drop quickly when notes end for responsive visualization
+- **Peak hold** - Peak indicators hold for 800ms before decaying
+- **60Hz refresh** - Smooth, real-time updates with no MIDI timing impact
 
 ### Channel Notes
 - **Channel 10** - Usually drums/percussion in General MIDI
@@ -550,7 +564,8 @@ You can edit `.cfg` files directly on your computer:
 **Manual Version:** 1.0
 **Last Updated:** 2025
 
+For support, bug reports, or feature requests, please contact the manufacturer or visit the project repository.
+
 ---
 
 **End of Manual**
-
