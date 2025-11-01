@@ -247,7 +247,7 @@ Real-time 16-channel activity display. Access: Press MODE from Clock Settings.
 ## Troubleshooting
 
 ### No Sound
-1. Check MIDI cable connections
+1. Check MIDI cable connections to your MIDI receiving device.
 2. Verify channel isn't muted (M:OF = unmuted)
 3. Check visualizer - do bars appear?
 4. Verify volume (Vo) isn't 0
@@ -382,3 +382,4 @@ For support, bug reports, or feature requests, visit the project repository.
 ---
 
 **End of Manual**
+
