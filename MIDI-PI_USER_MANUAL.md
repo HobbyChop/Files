@@ -1,247 +1,182 @@
 # MIDI-PI Portable MIDI Player - User Manual
 
+## Quick Start
+
+1. **Setup**: Insert FAT32-formatted SD card with MIDI files in `/MIDI` folder
+2. **Connect**: Connect MIDI output to your synthesizer or sound module
+3. **Power On**: Device displays file browser
+4. **Navigate**: Use LEFT/RIGHT to select a file
+5. **Play**: Press PLAY button to start playback
+6. **Adjust**: Press MODE to access Channel Settings for mixing/configuration
+
+---
+
 ## Table of Contents
 1. [Introduction](#introduction)
-2. [Controls](#controls)
-3. [Main Playback Screen](#main-playback-screen)
+2. [Button Controls](#button-controls)
+3. [Playback Screen](#playback-screen)
 4. [File Browser](#file-browser)
-5. [Channel Settings Menu](#channel-settings-menu)
-6. [MIDI Settings Menu](#midi-settings-menu)
-7. [Clock Settings Menu](#clock-settings-menu)
-8. [Visualizer Mode](#visualizer-mode)
-9. [Settings Files](#settings-files)
-10. [Tips & Tricks](#tips--tricks)
+5. [Channel Settings](#channel-settings)
+6. [Track Settings](#track-settings)
+7. [MIDI Settings](#midi-settings)
+8. [Clock Settings](#clock-settings)
+9. [Visualizer](#visualizer)
+10. [Troubleshooting](#troubleshooting)
 
 ---
 
 ## Introduction
 
-The MIDI-PI is a portable, standalone hardware MIDI file player designed for musicians, synthesizer enthusiasts, and performers who need reliable playback of MIDI sequences without a computer. Built around the Raspberry Pi Pico microcontroller, this compact device reads standard MIDI files from an SD card and sends MIDI data to your synthesizers, sound modules, drum machines, or any MIDI-compatible equipment. Whether you're performing live, testing MIDI files, controlling vintage synthesizers, or simply playing back your MIDI compositions, the MIDI-PI provides a dedicated, purpose-built solution with professional features like per-file settings memory, real-time mixing control, and precise MIDI timing. It's perfect for anyone who wants the convenience of computer-based MIDI playback in a small, affordable, and easy-to-use hardware package that works anywhere—no laptop required.
+The MIDI-PI is a standalone hardware MIDI file player for musicians and synth enthusiasts. Play MIDI files from an SD card without a computer. Features include real-time tempo/velocity control, per-file settings memory, 16-channel mixing, and MIDI clock output.
 
-### Key Features
+**Key Features:**
 - Standard MIDI file playback (Type 0 and Type 1)
-- Per-file settings (save custom configurations for each song)
-- Real-time tempo control (50-200%)
-- Global velocity scaling (1-100)
-- 16-channel mixer with per-channel control
-- Multiple playback modes (Single, Auto-Next, Loop One, Loop All)
+- Per-file configuration saves (`.cfg` files)
+- Real-time tempo (50-200%) and velocity (1-100) control
+- 16-channel mixer with program/pan/volume overrides
+- Playback modes: Single, Auto-Next, Loop One, Loop All
 - MIDI Thru and Keyboard modes
-- MIDI Clock output
-- Real-time 16-channel activity visualizer
+- MIDI Clock output for sync
+- Real-time 16-channel visualizer
 
 ---
 
-## Controls
+## Button Controls
 
-### Button Layout
-- **UP/DOWN** - Navigate menus, select files, scroll options
-- **LEFT/RIGHT** - Adjust values, navigate options horizontally
-- **OK** - Confirm selection, activate/deactivate editing mode
-  - **Hold OK for 2 seconds** - Reset BPM or Velocity to default (when option is active)
+**Navigation:**
+- **LEFT/RIGHT** - Navigate options, adjust values
+- **OK** - Select/activate option (hold 2s to reset active option)
+- **MODE** - Cycle through menus (hold 2s to jump to playback screen)
+
+**Playback:**
 - **PLAY** - Start/resume playback
 - **STOP** - Stop playback
-- **PAUSE** - Pause playback (press PLAY to resume)
-- **MODE** - Cycle through different screens and menus
-  - **Hold MODE for 2 seconds** - Jump directly to main playback screen from anywhere
-- **PANIC** - Send "All Notes Off" to all channels (emergency stop)
+- **PANIC** - Emergency all-notes-off (all 16 channels)
+
+**Special Combinations:**
+- **STOP + PLAY** - Reload file and settings
 
 ---
 
-## Main Playback Screen
+## Playback Screen
 
-The main screen displays during playback and provides quick access to essential controls.
+Main screen during playback with quick-access controls.
 
-### Display Elements
-
+**Display:**
 ```
 Track: SONG_NAME.MID
 00:45 / 03:30  ► SNG
 BPM:120  V:50  T:100%
 ```
 
-**Line 1: Track Information**
-- **Track:** Currently playing MIDI file name
+**Elements:**
+- **Track**: Current MIDI file name
+- **00:45 / 03:30**: Current position / Total length (MM:SS)
+- **►**: Playback state (► Playing, ❚❚ Paused, ■ Stopped)
+- **SNG**: Playback mode
+- **BPM:120**: Current tempo in beats per minute
+- **V:50**: Global velocity scale (50 = normal)
+- **T:100%**: Tempo percentage (100% = normal speed)
 
-**Line 2: Progress & Mode**
-- **00:45** - Current playback position (MM:SS)
-- **/ 03:30** - Total song length
-- **►** - Playback state icon
-  - **►** Playing
-  - **❚❚** Paused
-  - **■** Stopped
-- **SNG** - Playback mode (see below)
+**Playback Modes** (select with LEFT/RIGHT when "MODE" option active):
+- **SNG** (Single) - Play once, then stop
+- **NXT** (Auto-Next) - Play all tracks in sequence
+- **LP1** (Loop One) - Repeat current track
+- **LPA** (Loop All) - Loop all tracks
 
-**Line 3: Playback Parameters**
-- **BPM:120** - Current tempo in beats per minute
-- **V:50** - Global velocity scale (50 = normal)
-- **T:100%** - Tempo percentage (100% = normal speed)
+**Menu Options** (navigate with LEFT/RIGHT, activate with OK):
 
-### Playback Modes
-
-Navigate using LEFT/RIGHT when "MODE" option is selected:
-
-- **SNG** (Single) - Play current track once, then stop
-- **NXT** (Auto-Next) - Play current track, then automatically play next track
-- **LP1** (Loop One) - Repeat current track indefinitely
-- **LPA** (Loop All) - Play all tracks in sequence, then loop back to first
-
-### Menu Options
-
-Navigate with LEFT/RIGHT, activate with OK:
-
-1. **TRACK** - Press OK to open file browser
-2. **BPM** - Adjust tempo by ±1 BPM (adjusts tempo percentage to match)
-   - **Hold OK for 2 seconds** - Reset tempo to 100% (default)
-3. **VELOCITY** - Adjust global velocity scale (1-100)
-   - Values below 50: Quieter/softer notes
-   - 50: Normal MIDI velocity (default)
-   - Values above 50: Louder/harder notes
-   - **Hold OK for 2 seconds** - Reset to config value (or 50 if no config)
-4. **TIME** - Fast forward/rewind 1 second per button press
-5. **MODE** - Change playback mode (SNG/NXT/LP1/LPA)
-
-### Quick Actions
-- **PLAY** while stopped - Resume last played file
-- **STOP + PLAY** - Reload current file settings and restart
-- **MODE button** - Cycle to Channel Settings menu
-- **Hold MODE for 2 seconds** - Jump to playback screen from any menu
-- **Hold OK for 2 seconds** - Reset active option to default (BPM or Velocity)
-- **PANIC button** - Send "All Notes Off" on all 16 channels
+1. **TRACK** - Open file browser
+2. **BPM** - Adjust tempo ±1 BPM (hold OK 2s to reset to 100%)
+3. **VELOCITY** - Global velocity 1-100 (hold OK 2s to reset to config/50)
+4. **TIME** - Fast forward/rewind 1 second per press
+5. **MODE** - Change playback mode
+6. **PREV** (◄) - Skip to previous track
+7. **NEXT** (►) - Skip to next track
 
 ---
 
 ## File Browser
 
-Access by pressing OK on "TRACK" option from main playback screen.
+Access: Press OK on "TRACK" option from playback screen.
 
-### Display
-
+**Display:**
 ```
 ♪ MIDI Files
 > SONG01.MID
   SONG02.MID
-  SONG03.MID
 ```
 
-### Controls
-- **UP/DOWN** - Navigate file list
-- **OK** - Load selected file and return to playback screen
-- **PLAY** - Load selected file and start playing immediately
-- **MODE** - Cancel and return to playback screen
+**Controls:**
+- **LEFT/RIGHT** - Navigate files
+- **OK** - Load file and return to playback screen
+- **PLAY** - Load file and start playing immediately
+- **MODE** - Cancel and return
 
-### File Organization
-- Place MIDI files in the `/MIDI` folder on your SD card
-- Supported formats: `.mid`, `.midi`
-- Files are sorted alphabetically
-- The folder will be created automatically if it doesn't exist
+**File Organization:**
+- Place MIDI files (.mid, .midi) in `/MIDI` folder on SD card
+- Files sorted alphabetically
+- Folder created automatically if missing
 
 ---
 
-## Channel Settings Menu
+## Channel Settings
 
-Advanced per-track and per-channel MIDI configuration. Access by pressing MODE from main playback screen.
+Per-channel MIDI configuration. Access: Press MODE from playback screen.
 
-### Display Layout
-
+**Display:**
 ```
-[SAVE]    [DELETE]
-Ch: 1  M:OF  Ve:50
+CH. [SAVE] [DEL]
+Ch: 1  M:OF
 P:--  Pa: 64  Vo:100
 ```
 
-### Top Row: Actions
-- **[SAVE]** - Save current settings to a .cfg file
-- **[DELETE]** - Delete saved settings file for this track
+**Options:**
+- **[SAVE]** - Save settings to `.cfg` file (LEFT/RIGHT for YES/NO, OK to confirm)
+- **[DEL]** - Delete `.cfg` file and revert to defaults
+- **Ch: 1** - Select channel (1-16)
+- **M:OF** - Mute status (OF=unmuted, ON=muted)
+- **P:--** - Program/Instrument (--=MIDI file default, 0-127=override)
+- **Pa:64** - Pan (--=MIDI default, 0=left, 64=center, 127=right)
+- **Vo:100** - Volume (--=MIDI default, 0-127=set level)
 
-### Line 1: Channel & Global Settings
-- **Ch: 1** - Selected channel (1-16)
-- **M:OF** - Mute status
-  - **OF** = Channel unmuted (normal)
-  - **ON** = Channel muted (silent)
-- **Ve:50** - **Global Velocity** (1-100, affects entire song)
-  - Adjusts note dynamics for the whole track
-  - Lower = softer/quieter, Higher = louder/harder
-  - Default: 50 (normal)
-  - Use this to balance loud/quiet tracks
-
-### Line 2: Per-Channel Settings
-- **P:--** - Program (Instrument)
-  - **--** = Use MIDI file default
-  - **0-127** = Override with specific instrument
-  - Cycles 0→127→-- (use MIDI file)
-- **Pa:64** - Pan position (stereo positioning)
-  - **--** = Use MIDI file default
-  - **0** = Full left
-  - **64** = Center (default)
-  - **127** = Full right
-- **Vo:100** - Per-channel Volume (0-127)
-  - **--** = Use MIDI file default
-  - **0** = Silent
-  - **127** = Maximum volume
-  - Default: 127
-
-### Navigation
-- **LEFT/RIGHT** - Navigate between options
-- **OK** - Activate/deactivate editing mode (box fills when active)
-- **UP/DOWN** - When Program option active, scroll through channels
-- **LEFT/RIGHT** - When option active, adjust value
-
-### How Settings Work
-
-**Velocity (Ve) vs Volume (Vo):**
-- **Velocity (Ve)** - Global setting affecting how "hard" all notes are played
-  - Affects note attack and perceived loudness
-  - Changes the dynamics of the entire song
-  - Use this to balance overall track volume
-- **Volume (Vo)** - Per-channel MIDI CC7 volume control
-  - Adjusts the volume of individual channels
-  - Use this to balance instruments within a song
+**Settings Saved:**
+All 16 channels: mutes, programs, pan, volume, and global velocity
 
 **Override Behavior:**
-When you set a value other than the default (--):
-- Your setting **overrides** the MIDI file
-- The MIDI file's Program Changes, Volume (CC7), and Pan (CC10) messages are ignored
-- This allows you to permanently fix problematic tracks
-
-### Saving Settings
-
-1. Adjust your desired settings
-2. Navigate to **[SAVE]** option
-3. Press **OK**
-4. Settings are saved to `SONGNAME.cfg` on the SD card
-5. Settings automatically load when this track plays
-
-**Settings are saved per-file and include:**
-- Channel mutes (all 16 channels)
-- Program overrides (all 16 channels)
-- Pan overrides (all 16 channels)
-- Volume overrides (all 16 channels)
-- Global velocity scale
-
-### Deleting Settings
-
-1. Navigate to **[DELETE]** option
-2. Press **OK**
-3. Confirmation message appears
-4. Track reverts to default settings immediately
-
-**Messages:**
-- "Settings Deleted!" - File was deleted successfully
-- "No Settings to Delete" - No .cfg file exists for this track
-
-### Quick Actions
-- **MODE button** - Cycle to MIDI Settings menu
-- **PANIC button** - Send "All Notes Off" on all channels
-- **STOP + PLAY** - Reload settings from file
+When you set a value other than "--", your setting overrides the MIDI file. The file's Program Change, CC7 (Volume), and CC10 (Pan) messages are ignored.
 
 ---
 
-## MIDI Settings Menu
+## Track Settings
 
-Configure MIDI input behavior. Access by pressing MODE from Channel Settings.
+Global track configuration. Access: Press MODE from Channel Settings.
 
-### Display
+**Display:**
+```
+TRCK [SAVE] [DEL]
+BPM:120  Ve:50
+```
 
+**Options:**
+- **[SAVE]** - Save all settings (channel + track) to `.cfg` file
+- **[DEL]** - Delete `.cfg` file
+- **BPM** - Adjust tempo ±1 BPM
+- **Ve** - Global velocity (1-100, 50=normal)
+
+**Velocity vs Volume:**
+- **Velocity (Ve)** - Global "hardness" of all notes (affects dynamics)
+- **Volume (Vo)** - Per-channel CC7 volume (affects individual channels)
+
+Use Velocity to balance loud/quiet tracks overall. Use Volume to balance instruments within a song.
+
+---
+
+## MIDI Settings
+
+MIDI input configuration. Access: Press MODE from Track Settings.
+
+**Display:**
 ```
 MIDI IN
 Thru:      [OFF]
@@ -250,85 +185,42 @@ Kbd Ch:      1
 Kbd V:      50
 ```
 
-### Options
+**Options:**
+- **Thru** - Pass MIDI input to output (ON/OFF)
+- **Keyboard** - Enable keyboard mode (ON/OFF)
+- **Kbd Ch** - Keyboard channel (1-16, active when Keyboard=ON)
+- **Kbd V** - Keyboard velocity scaling (1-100, 50=normal, active when Keyboard=ON)
 
-**MIDI Thru** (Thru)
-- **OFF** - MIDI input ignored (default)
-- **ON** - All received MIDI messages are echoed to MIDI output
-- Use case: Pass MIDI from a controller through to your synth
-- Note: Thru and Keyboard modes are mutually exclusive
-
-**MIDI Keyboard** (Keyboard)
-- **OFF** - Keyboard mode disabled (default)
-- **ON** - Received MIDI notes play on selected keyboard channel
-- Use case: Play your synth manually while file playback is stopped
-- Keyboard channel: 1-16 (selectable)
-- Note: Thru and Keyboard modes are mutually exclusive
-
-**Keyboard Channel** (Kbd Ch)
-- Selects which MIDI channel (1-16) keyboard notes are sent on
-- Only active when Keyboard mode is ON
-
-**Keyboard Velocity** (Kbd V)
-- Scales velocity of incoming MIDI keyboard notes (1-100)
-- **50** = Normal/default (no scaling)
-- Values below 50: Softer keyboard input
-- Values above 50: Louder keyboard input
-- Affects both MIDI output and visualizer display
-- Only active when Keyboard mode is ON
-
-### Controls
-- **LEFT/RIGHT** - Navigate options
-- **OK** - Activate editing mode
-- **LEFT/RIGHT (when active)** - Change value
-- **MODE button** - Cycle to Clock Settings menu
-- **PANIC button** - Send "All Notes Off" on all channels
+**Note:** Thru and Keyboard modes are mutually exclusive.
 
 ---
 
-## Clock Settings Menu
+## Clock Settings
 
-Configure MIDI Clock output. Access by pressing MODE from MIDI Settings.
+MIDI Clock output configuration. Access: Press MODE from MIDI Settings.
 
-### Display
-
+**Display:**
 ```
 MIDI CLOCK
 Enabled:   [OFF]
 ```
 
-### Option
+**Option:**
+- **Enabled** - Send MIDI Clock/Start/Stop/Continue messages (ON/OFF)
 
-**MIDI Clock Enabled**
-- **OFF** - No MIDI clock messages sent (default)
-- **ON** - Send MIDI Clock, Start, Stop, and Continue messages
-- Use case: Sync external sequencers, drum machines, or DAWs to playback
-
-### MIDI Clock Behavior
-
-When enabled, the player sends:
-- **Clock messages** - 24 pulses per quarter note during playback
-- **Start message** - When playback begins from the start
-- **Stop message** - When playback stops
-- **Continue message** - When resuming from pause
-
-**Note:** MIDI Clock is only sent during active playback.
-
-### Controls
-- **LEFT/RIGHT** - Navigate option (only one option)
-- **OK** - Activate editing mode
-- **LEFT/RIGHT (when active)** - Toggle ON/OFF
-- **MODE button** - Cycle to Visualizer
-- **PANIC button** - Send "All Notes Off" on all channels
+**Behavior (when enabled):**
+- Sends 24 clock pulses per quarter note during playback
+- Sends Start when playing from beginning
+- Sends Stop when stopped
+- Sends Continue when resuming from pause
 
 ---
 
-## Visualizer Mode
+## Visualizer
 
-Real-time 16-channel MIDI activity display. Access by pressing MODE from Clock Settings.
+Real-time 16-channel activity display. Access: Press MODE from Clock Settings.
 
-### Display
-
+**Display:**
 ```
  1  2  3  4  5  6  7  8
 █  ▆  █  ▄     ▂  █  ▅
@@ -336,52 +228,61 @@ Real-time 16-channel MIDI activity display. Access by pressing MODE from Clock S
 ▃     █  ▆  ▂     ▄  █
 ```
 
-### What It Shows
-- **16 columns** - One for each MIDI channel (1-16)
-- **Bar height** - Current note velocity on that channel
-- **Peak indicator** - Highest recent velocity (holds for 800ms, then decays)
-- **Baseline markers** - Small dash at bottom of each channel
+**What It Shows:**
+- 16 columns (channels 1-16)
+- Bar height = note activity
+- Peak indicator = highest recent activity (holds briefly)
+- Baseline markers = channel position reference
 
-### Activity Detection
-- **Instant response** - Bars update immediately when notes are received
-- **Simple per-channel tracking** - Shows most recent note velocity per channel
-- **70% velocity scaling** - Prevents bars from maxing out too easily
-  - MIDI velocity 64 (medium) displays at ~35% bar height
-  - MIDI velocity 90 (loud) displays at ~50% bar height
-  - MIDI velocity 127 (max) displays at ~70% bar height
-- **Fast decay** - Bars drop quickly when notes end for responsive visualization
-- **Peak hold** - Peak indicators hold for 800ms before decaying
-- **60Hz refresh** - Smooth, real-time updates with no MIDI timing impact
-
-### Channel Notes
-- **Channel 10** - Usually drums/percussion in General MIDI
-- **All channels** - Activity shown regardless of mute status
-
-### Controls
-- **MODE button** - Cycle back to main playback screen
-- **STOP** - Clear visualizer bars
-- **PAUSE** - Clear visualizer bars
-- **PANIC button** - Send "All Notes Off" on all channels
-
-### Use Cases
-- Verify MIDI file is playing correctly
-- Identify which channels are active
-- Troubleshoot silent channels (check if bars appear)
+**Use Cases:**
+- Verify file playback
+- Identify active channels
+- Troubleshoot silent channels
 - Visual feedback during setup
+
+**Note:** Channel 10 typically represents drums/percussion in General MIDI.
 
 ---
 
-## Settings Files
+## Troubleshooting
 
-The MIDI-PI creates `.cfg` files to store per-track settings.
+### No Sound
+1. Check MIDI cable connections
+2. Verify channel isn't muted (M:OF = unmuted)
+3. Check visualizer - do bars appear?
+4. Verify volume (Vo) isn't 0
+5. Delete `.cfg` file and reload
 
-### File Format
-- Filename: `SONGNAME.cfg` (matches MIDI file name)
-- Location: Same folder as MIDI file
-- Format: Plain text key=value pairs
-- Encoding: ASCII
+### Stuck Notes
+- Press PANIC button
+- Check MIDI cable quality
+- Verify synth receives on correct channels
 
-### Example Content
+### File Won't Load
+- Ensure file is in `/MIDI` folder
+- Check extension is `.mid` or `.midi`
+- Use shorter filename
+- Verify SD card is FAT32
+
+### Settings Not Saving
+- Ensure SD card isn't write-protected
+- Check free space
+- Try different SD card
+- Avoid special characters in filenames
+
+### Fast Forward/Rewind Issues
+- Slower on very long files (50,000 event limit per seek)
+- Device pauses during seeking to prevent MIDI errors
+
+---
+
+## Settings Files (.cfg)
+
+Per-file settings saved as `SONGNAME.cfg` in same folder as MIDI file.
+
+**Format:** Plain text key=value pairs
+
+**Example:**
 ```
 [MIDI_SETTINGS_V1]
 MUTES=0
@@ -391,180 +292,92 @@ PAN=255,255,255,64,255,255,255,255,255,255,255,255,255,255,255,255
 VELOCITY_SCALE=50
 ```
 
-### Value Meanings
-- **MUTES** - 16-bit bitmask (bit set = channel muted)
-- **PROGRAMS** - Comma-separated values per channel
-  - 0-127: Specific program number
-  - 128: Use MIDI file default
-- **VOLUMES** - Comma-separated values per channel
-  - 0-127: Specific volume level
-  - 255: Use MIDI file default
-- **PAN** - Comma-separated values per channel
-  - 0-127: Specific pan position (0=left, 64=center, 127=right)
-  - 255: Use MIDI file default
-- **VELOCITY_SCALE** - Global velocity (1-100)
+**Values:**
+- **PROGRAMS**: 0-127 (specific), 128 (use MIDI default)
+- **VOLUMES**: 0-127 (specific), 255 (use MIDI default)
+- **PAN**: 0-127 (specific, 0=left, 64=center, 127=right), 255 (use MIDI default)
+- **VELOCITY_SCALE**: 1-100 (global velocity)
 
-### Manual Editing
-You can edit `.cfg` files directly on your computer:
-1. Remove SD card and insert into computer
-2. Edit `.cfg` file with text editor
-3. Save changes
-4. Re-insert SD card into MIDI-PI
-5. Load the track - settings apply automatically
+**Manual Editing:**
+Remove SD card, edit `.cfg` with text editor, save, re-insert. Settings apply on next load.
 
 ---
 
 ## Tips & Tricks
 
-### Performance Tips
+**Fast Navigation:**
+- PLAY from file browser loads and plays immediately
+- Hold MODE 2s to jump to playback screen from anywhere
+- Use NXT mode for continuous playback
+- Use LPA mode for background music
 
-**Balancing Loud/Quiet Tracks**
-- Use global Velocity (Ve) setting in Channel Settings
+**Balancing Tracks:**
+- Use Velocity (Ve) to balance loud/quiet tracks (try 30-40 for loud, 60-70 for quiet)
 - Save settings per-file for consistent playback
-- Start with Ve:30-40 for very loud tracks
-- Start with Ve:60-70 for quiet tracks
 
-**Fixing Problematic Instruments**
-- Override Program on specific channels
-- Experiment with different programs (0-127)
-- Save settings to avoid re-configuration
+**Creating Custom Mixes:**
+- Mute channels for karaoke tracks
+- Adjust Volume (Vo) to balance instruments
+- Use Pan to create stereo image
+- Use program to change instruments for individual tracks (If your sound device supports it.)
 
-**Creating Custom Mixes**
-- Mute backing channels to create karaoke tracks
-- Adjust per-channel Volume (Vo) to balance instruments
-- Use Pan to create wider stereo image
-
-### Workflow Tips
-
-**Fast Navigation**
-- Press PLAY from file browser to load and play immediately
-- Hold MODE for 2 seconds to instantly return to playback screen
-- Use Auto-Next (NXT) mode for continuous playback
-- Use Loop All (LPA) mode for background music
-
-**Tempo Adjustments**
+**Tempo Control:**
 - Tempo changes are temporary (not saved)
-- Reload file (STOP + PLAY) to reset tempo to 100%
-- Hold OK for 2 seconds on BPM option to reset to 100%
-- Use BPM control for fine adjustments (±1 BPM)
-- Use TIME for quick navigation during playback
+- STOP + PLAY reloads and resets tempo
+- Hold OK 2s on BPM to reset to 100%
 
-**Quick Reset Features**
-- Hold OK for 2 seconds on active BPM - Resets to 100%
-- Hold OK for 2 seconds on active Velocity - Resets to saved value or 50
-- Hold resets automatically deactivate the option for quick navigation
-
-**Testing Changes**
-- Use visualizer to verify channel activity
-- PANIC button immediately silences stuck notes
-- STOP + PLAY reloads settings from .cfg file
-
-### Troubleshooting
-
-**No Sound**
-1. Check MIDI cable connections
-2. Verify channel isn't muted (M:OF = unmuted)
-3. Check visualizer - do bars appear?
-4. Verify channel volume (Vo) isn't 0
-5. Try deleting .cfg file and reloading
-
-**Stuck Notes**
-- Press PANIC button (sends All Notes Off)
-- Check MIDI cable quality
-- Verify synth is receiving on correct channels
-
-**File Won't Load**
-- Ensure file is in `/MIDI` folder
-- Check file extension is `.mid` or `.midi`
-- Try file with shorter filename
-- Verify SD card is formatted FAT32
-
-**Settings Not Saving**
-- Ensure SD card isn't write-protected
-- Check SD card has free space
-- Try a different SD card
-- Verify filename doesn't have special characters
-
-**Seeking Issues (Long Files)**
-- Fast forward/rewind may be slower on very long files
-- Device automatically pauses during seeking to prevent MIDI leakage
-- Limit is 50,000 events per seek operation (safety feature)
-
-### SD Card Recommendations
-- Format: FAT32
-- Speed: Class 10 or better recommended
-- Size: 2GB-32GB (larger works but unnecessary)
-- Quality: Use reputable brand cards to avoid corruption
-
-### MIDI File Recommendations
-- Format: Type 0 or Type 1 MIDI files
-- Resolution: 96-480 PPQN recommended
-- Size: Files under 1MB work best
-- Tempo: Files with embedded tempo changes supported
+**Testing Changes:**
+- Use visualizer to verify activity
+- PANIC silences stuck notes
+- STOP + PLAY reloads `.cfg` settings
 
 ---
 
-## Appendix: MIDI Technical Details
+## Recommendations
 
-### MIDI Implementation
+**SD Card:**
+- Format: FAT32
+- Speed: Class 10+
+- Size: 2-32GB
+- Quality: Use reputable brands
 
-**Output:**
-- Standard MIDI 1.0 specification
-- Baud rate: 31,250 bps
-- Connector: 5-pin DIN or TRS (depending on hardware)
+**MIDI Files:**
+- Format: Type 0 or Type 1
+- Resolution: 96-480 PPQN
+- Size: Under 1MB preferred
+- Tempo: Embedded tempo changes supported
+
+---
+
+## Technical Specifications
+
+**MIDI Implementation:**
+- Standard MIDI 1.0, 31,250 bps
 - All 16 channels supported
-- All standard MIDI messages supported
+- Messages: Note On/Off, Program Change, Control Change, Pitch Bend, Aftertouch, SysEx
+- MT-32 compatible (35ms SysEx delay)
 
-**Supported MIDI Messages:**
-- Note On/Off
-- Program Change
-- Control Change (all CCs)
-- Pitch Bend
-- Channel Aftertouch
-- Polyphonic Aftertouch
-- System Exclusive (SysEx)
-- MIDI Clock (when enabled)
-- MIDI Start/Stop/Continue (when clock enabled)
+**Hardware:**
+- Processor: Raspberry Pi Pico (RP2040, dual-core @ 133MHz)
+- Core 0: UI, display, files
+- Core 1: MIDI timing (microsecond precision)
+- Storage: MicroSD (FAT32, up to 32GB SDHC)
+- Display: 128x32 OLED (SSD1306, I2C)
 
-**Filtered Messages (when overrides set):**
-- Program Change (when user program 0-127 set)
-- CC7 Volume (when user volume 0-127 set)
-- CC10 Pan (when user pan 0-127 set)
-
-**MT-32 Compatibility:**
-- SysEx messages sent with 35ms delay
-- Suitable for MT-32, MT-32 Pi, or similar modules
-- Works with FluidSynth mode on MT-32 Pi
-
-### Hardware Specifications
-
-**Processor:** Raspberry Pi Pico (RP2040)
-- Dual-core ARM Cortex-M0+ @ 133MHz
-- Core 0: UI, display, file I/O
-- Core 1: MIDI timing (dedicated for accuracy)
-
-**Storage:** MicroSD card (FAT32)
-- SD card speed: 12 MHz SPI clock
-- Supports cards up to 32GB (SDHC)
-
-**Display:** 128x64 OLED (SSD1306)
-- I2C interface
-- Monochrome graphics
-
-**Timing Accuracy:**
-- Microsecond-precision MIDI timing
-- Tempo range: 50-200% (BPM dependent)
-- MIDI Clock: 24 PPQN
+**Timing:**
+- Microsecond-precision MIDI
+- Tempo range: 50-200%
+- Clock: 24 PPQN
 
 ---
 
 ## Version Information
 
-**Firmware Version:** 1.0
-**Manual Version:** 1.0
-**Last Updated:** 2025
+**Firmware:** 1.0
+**Manual:** 1.0
+**Updated:** 2025
 
-For support, bug reports, or feature requests, please contact the manufacturer or visit the project repository.
+For support, bug reports, or feature requests, visit the project repository.
 
 ---
 
