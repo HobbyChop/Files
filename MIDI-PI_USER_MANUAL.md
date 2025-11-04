@@ -32,12 +32,15 @@ The MIDI-PI is a standalone hardware MIDI file player for musicians and synth en
 **Key Features:**
 - Standard MIDI file playback (Type 0 and Type 1)
 - Per-file configuration saves (`.cfg` files)
+- **Tap Tempo** - Set BPM by tapping rhythmically
 - Real-time tempo (50-200%) and velocity (1-100) control
-- 16-channel mixer with program/pan/volume overrides
+- 16-channel mixer with program/pan/volume/velocity/transpose overrides
+- Solo and routing per channel
+- SysEx enable/disable per-file (prevents MT-32 detuning)
 - Playback modes: Single, Auto-Next, Loop One, Loop All
 - MIDI Thru and Keyboard modes
 - MIDI Clock output for sync
-- Real-time 16-channel visualizer
+- Real-time 16-channel visualizer with animated bubbles
 
 ---
 
@@ -66,7 +69,7 @@ Main screen during playback with quick-access controls.
 ```
 Track: SONG_NAME.MID
 00:45 / 03:30  ► SNG
-BPM:120  V:50  T:100%
+BPM:120  [TAP]  MODE
 ```
 
 **Elements:**
@@ -75,8 +78,9 @@ BPM:120  V:50  T:100%
 - **►**: Playback state (► Playing, ❚❚ Paused, ■ Stopped)
 - **SNG**: Playback mode
 - **BPM:120**: Current tempo in beats per minute
-- **V:50**: Global velocity scale (50 = normal)
-- **T:100%**: Tempo percentage (100% = normal speed)
+- **[TAP]**: Tap tempo button for quick BPM setting
+- **MODE**: Current playback mode indicator
+- **Se**: SysEx indicator (shown when file contains SysEx messages)
 
 **Playback Modes** (select with LEFT/RIGHT when "MODE" option active):
 - **SNG** (Single) - Play once, then stop
@@ -88,11 +92,19 @@ BPM:120  V:50  T:100%
 
 1. **TRACK** - Open file browser
 2. **BPM** - Adjust tempo ±1 BPM (hold OK 2s to reset to 100%)
-3. **VELOCITY** - Global velocity 1-100 (hold OK 2s to reset to config/50)
-4. **TIME** - Fast forward/rewind 1 second per press
-5. **MODE** - Change playback mode
+3. **TAP** - Tap tempo - tap LEFT or RIGHT button rhythmically to set BPM
+4. **MODE** - Change playback mode
+5. **TIME** - Fast forward/rewind 1 second per press
 6. **PREV** (◄) - Skip to previous track
 7. **NEXT** (►) - Skip to next track
+
+**Tap Tempo Usage:**
+- Navigate to TAP and press OK to activate (button shows inverted)
+- Tap LEFT or RIGHT button rhythmically (minimum 2 taps)
+- BPM updates immediately based on your tapping
+- Each tap refines the tempo (uses average of last 4 taps)
+- Press OK again to deactivate
+- Auto-resets after 2 seconds of inactivity
 
 ---
 
@@ -126,9 +138,9 @@ Per-channel MIDI configuration. Access: Press MODE from playback screen.
 
 **Display:**
 ```
-CH. [SAVE] [DEL]
-Ch: 1  M:OF
-P:--  Pa: 64  Vo:100
+CH. [SAVE] [DEL]     Pa:64
+Ch: 1  M:OF  S:OF  Tr: +0
+P:--  Ve:--  Vo:100
 ```
 
 **Options:**
@@ -136,9 +148,12 @@ P:--  Pa: 64  Vo:100
 - **[DEL]** - Delete `.cfg` file and revert to defaults
 - **Ch: 1** - Select channel (1-16)
 - **M:OF** - Mute status (OF=unmuted, ON=muted)
+- **S:OF** - Solo status (OF=not solo, ON=solo). When any channel is solo, all non-solo channels are muted
+- **Tr: +0** - Transpose in semitones (-24 to +24, 0=no transpose)
 - **P:--** - Program/Instrument (--=MIDI file default, 0-127=override)
-- **Pa:64** - Pan (--=MIDI default, 0=left, 64=center, 127=right)
+- **Ve:--** - Per-channel velocity scale (--=use global, 1-200, 100=normal)
 - **Vo:100** - Volume (--=MIDI default, 0-127=set level)
+- **Pa:64** - Pan (--=MIDI default, 0=left, 64=center, 127=right)
 
 **Settings Saved:**
 All 16 channels: mutes, programs, pan, volume, and global velocity
@@ -156,6 +171,7 @@ Global track configuration. Access: Press MODE from Channel Settings.
 ```
 TRCK [SAVE] [DEL]
 BPM:120  Ve:50
+SysEx: ON
 ```
 
 **Options:**
@@ -163,12 +179,27 @@ BPM:120  Ve:50
 - **[DEL]** - Delete `.cfg` file
 - **BPM** - Adjust tempo ±1 BPM
 - **Ve** - Global velocity (1-100, 50=normal)
+- **SysEx** - Enable/disable System Exclusive messages (ON/OFF)
 
-**Velocity vs Volume:**
-- **Velocity (Ve)** - Global "hardness" of all notes (affects dynamics)
-- **Volume (Vo)** - Per-channel CC7 volume (affects individual channels)
+**Velocity Hierarchy:**
+- **Global Velocity (Ve)** - Affects all notes on all channels (1-100, 50=normal)
+- **Per-Channel Velocity (Ch. Ve)** - Multiplies global velocity per channel (--=use global, 1-200, 100=normal)
+- **Volume (Vo)** - Per-channel CC7 volume control (--=MIDI default, 0-127)
 
-Use Velocity to balance loud/quiet tracks overall. Use Volume to balance instruments within a song.
+**Use Cases:**
+- Use **Global Velocity** to balance loud/quiet tracks overall
+- Use **Per-Channel Velocity** to adjust instrument balance within a song
+- Use **Volume** to set fixed volume levels per channel
+
+**SysEx Messages:**
+System Exclusive (SysEx) messages are device-specific MIDI commands. Some MIDI files (especially MT-32 game soundtracks) contain SysEx messages that change instrument parameters like tuning or patch settings.
+
+**When to Disable SysEx:**
+- If a file causes detuning or weird sounds that persist between songs
+- If you want to prevent device-specific modifications
+- When using a different synth than the file was designed for
+
+**Note:** SysEx is enabled by default. Disable only if experiencing issues.
 
 ---
 
@@ -222,23 +253,28 @@ Real-time 16-channel activity display. Access: Press MODE from Clock Settings.
 
 **Display:**
 ```
- 1  2  3  4  5  6  7  8   9 10 11 12 13 14 15 16
- ▃    █  ▆ ▂  ▄  █  █  ▆  █  ▄    ▂  █ ▅ 
-
-
+ 1  2  3  4  5  6  7  8
+█  ▆  █  ▄     ▂  █  ▅
+ 9 10 11 12 13 14 15 16
+▃     █  ▆  ▂     ▄  █
 ```
 
 **What It Shows:**
 - 16 columns (channels 1-16)
-- Bar height = note activity
-- Peak indicator = highest recent activity (holds briefly)
+- Bar height = note activity (scaled by velocity × expression)
+- Peak indicator = highest recent activity (holds briefly with decay)
+- Animated bubbles = rising through active bars for visual interest
 - Baseline markers = channel position reference
+
+**Animation:**
+The visualizer features animated bubbles that float upward through active channel bars. Each channel has 2 bubbles at different speeds, creating a dynamic visual effect that helps distinguish active channels.
 
 **Use Cases:**
 - Verify file playback
 - Identify active channels
 - Troubleshoot silent channels
 - Visual feedback during setup
+- Monitor channel activity and expression changes in real-time
 
 **Note:** Channel 10 typically represents drums/percussion in General MIDI.
 
@@ -247,7 +283,7 @@ Real-time 16-channel activity display. Access: Press MODE from Clock Settings.
 ## Troubleshooting
 
 ### No Sound
-1. Check MIDI cable connections to your MIDI receiving device.
+1. Check MIDI cable connections
 2. Verify channel isn't muted (M:OF = unmuted)
 3. Check visualizer - do bars appear?
 4. Verify volume (Vo) isn't 0
@@ -286,17 +322,30 @@ Per-file settings saved as `SONGNAME.cfg` in same folder as MIDI file.
 ```
 [MIDI_SETTINGS_V1]
 MUTES=0
+SOLOS=0
 PROGRAMS=128,128,128,0,128,128,128,128,128,128,128,128,128,128,128,128
 VOLUMES=255,255,255,100,255,255,255,255,255,255,255,255,255,255,255,255
 PAN=255,255,255,64,255,255,255,255,255,255,255,255,255,255,255,255
+TRANSPOSE=0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,0
+ROUTING=255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255
+CH_VELOCITY=0,0,0,120,0,0,0,0,0,0,0,0,0,0,0,0
 VELOCITY_SCALE=50
+TEMPO_PERCENT=100
+SYSEX_ENABLED=1
 ```
 
 **Values:**
+- **MUTES**: Bitmask (0=all unmuted, bit 0=ch1, bit 1=ch2, etc.)
+- **SOLOS**: Bitmask (0=no solos, bit 0=ch1, bit 1=ch2, etc.)
 - **PROGRAMS**: 0-127 (specific), 128 (use MIDI default)
 - **VOLUMES**: 0-127 (specific), 255 (use MIDI default)
 - **PAN**: 0-127 (specific, 0=left, 64=center, 127=right), 255 (use MIDI default)
-- **VELOCITY_SCALE**: 1-100 (global velocity)
+- **TRANSPOSE**: -24 to +24 semitones (0=no transpose)
+- **ROUTING**: 0-15 (route to channel), 255 (use original channel)
+- **CH_VELOCITY**: 0 (use global), 1-200 (per-channel scale, 100=normal)
+- **VELOCITY_SCALE**: 1-100 (global velocity, 50=normal)
+- **TEMPO_PERCENT**: 50-200 (tempo percentage, 100=normal)
+- **SYSEX_ENABLED**: 0 (disabled), 1 (enabled)
 
 **Manual Editing:**
 Remove SD card, edit `.cfg` with text editor, save, re-insert. Settings apply on next load.
@@ -322,12 +371,27 @@ Remove SD card, edit `.cfg` with text editor, save, re-insert. Settings apply on
 - Use program to change instruments for individual tracks (If your sound device supports it.)
 
 **Tempo Control:**
-- Tempo changes are temporary (not saved)
+- Use TAP tempo for quick BPM matching (great for live performance)
+- Tap along with a metronome or reference track
+- Fine-tune with BPM option after tapping
+- Tempo changes are temporary (not saved to config)
 - STOP + PLAY reloads and resets tempo
 - Hold OK 2s on BPM to reset to 100%
 
+**Advanced Mixing:**
+- Use Solo (S) to isolate channels while mixing
+- Use Transpose (Tr) to fix out-of-range notes or create harmonies
+- Use Per-Channel Velocity to balance loud/quiet instruments
+- Use Routing to merge multiple channels to one output
+
+**SysEx Issues:**
+- If synth sounds wrong after a file, disable SysEx for that file
+- SysEx settings are saved per-file
+- MT-32/SC-55 users: Some game soundtracks include instrument patches via SysEx
+
 **Testing Changes:**
-- Use visualizer to verify activity
+- Use visualizer to verify activity and expression changes
+- Watch for bubble animation to confirm channel activity
 - PANIC silences stuck notes
 - STOP + PLAY reloads `.cfg` settings
 
@@ -382,5 +446,3 @@ For support, bug reports, or feature requests, visit the project repository.
 ---
 
 **End of Manual**
-
-
