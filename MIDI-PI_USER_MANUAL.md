@@ -32,8 +32,9 @@ The MIDI-PI is a standalone hardware MIDI file player for musicians and synth en
 **Key Features:**
 - Standard MIDI file playback (Type 0 and Type 1)
 - Per-file configuration saves (`.cfg` files)
+- **Precise BPM Control** - 0.01 BPM precision (40.00-300.00 BPM) with separate whole/decimal editing
 - **Tap Tempo** - Set BPM by tapping rhythmically
-- Real-time tempo (50-200%) and velocity (1-100) control
+- Real-time tempo and velocity (1-100) control
 - 16-channel mixer with program/pan/volume/velocity/transpose overrides
 - Solo and routing per channel
 - SysEx enable/disable per-file (prevents MT-32 detuning)
@@ -69,7 +70,7 @@ Main screen during playback with quick-access controls.
 ```
 Track: SONG_NAME.MID
 00:45 / 03:30  ► SNG
-BPM:120  [TAP]  MODE
+BPM:120.50  [TAP]  MODE
 ```
 
 **Elements:**
@@ -77,7 +78,7 @@ BPM:120  [TAP]  MODE
 - **00:45 / 03:30**: Current position / Total length (MM:SS)
 - **►**: Playback state (► Playing, ❚❚ Paused, ■ Stopped)
 - **SNG**: Playback mode
-- **BPM:120**: Current tempo in beats per minute
+- **BPM:120.50**: Current tempo in beats per minute (with 0.01 BPM precision)
 - **[TAP]**: Tap tempo button for quick BPM setting
 - **MODE**: Current playback mode indicator
 - **Se**: SysEx indicator (shown when file contains SysEx messages)
@@ -91,7 +92,13 @@ BPM:120  [TAP]  MODE
 **Menu Options** (navigate with LEFT/RIGHT, activate with OK):
 
 1. **TRACK** - Open file browser
-2. **BPM** - Adjust tempo ±1 BPM (hold OK 2s to reset to 100%)
+2. **BPM** - Adjust tempo with 0.01 BPM precision (40.00-300.00 BPM range)
+   - Press OK to activate whole number editing (underline shows under whole number)
+   - LEFT/RIGHT adjusts by ±1.00 BPM
+   - Press OK again to switch to decimal editing (underline moves to decimals)
+   - LEFT/RIGHT adjusts by ±0.01 BPM
+   - Press OK again to deactivate
+   - Hold OK 2s to reset to saved config BPM (or file default if no config)
 3. **TAP** - Tap tempo - tap LEFT or RIGHT button rhythmically to set BPM
 4. **MODE** - Change playback mode
 5. **TIME** - Fast forward/rewind 1 second per press
@@ -170,14 +177,19 @@ Global track configuration. Access: Press MODE from Channel Settings.
 **Display:**
 ```
 TRCK [SAVE] [DEL]
-BPM:120  Ve:50
+BPM:120.50  Ve:50
 SysEx: ON
 ```
 
 **Options:**
 - **[SAVE]** - Save all settings (channel + track) to `.cfg` file
 - **[DEL]** - Delete `.cfg` file
-- **BPM** - Adjust tempo ±1 BPM
+- **BPM** - Adjust tempo with 0.01 BPM precision (same as playback screen)
+  - Press OK to activate whole number editing (underline under whole number)
+  - LEFT/RIGHT adjusts by ±1.00 BPM
+  - Press OK to switch to decimal editing (underline under decimals)
+  - LEFT/RIGHT adjusts by ±0.01 BPM
+  - Press OK again to deactivate
 - **Ve** - Global velocity (1-100, 50=normal)
 - **SysEx** - Enable/disable System Exclusive messages (ON/OFF)
 
@@ -330,7 +342,8 @@ TRANSPOSE=0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,0
 ROUTING=255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255
 CH_VELOCITY=0,0,0,120,0,0,0,0,0,0,0,0,0,0,0,0
 VELOCITY_SCALE=50
-TEMPO_PERCENT=100
+TARGET_BPM=12050
+USE_TARGET_BPM=1
 SYSEX_ENABLED=1
 ```
 
@@ -344,7 +357,8 @@ SYSEX_ENABLED=1
 - **ROUTING**: 0-15 (route to channel), 255 (use original channel)
 - **CH_VELOCITY**: 0 (use global), 1-200 (per-channel scale, 100=normal)
 - **VELOCITY_SCALE**: 1-100 (global velocity, 50=normal)
-- **TEMPO_PERCENT**: 50-200 (tempo percentage, 100=normal)
+- **TARGET_BPM**: BPM in hundredths (12050 = 120.50 BPM, range: 4000-30000)
+- **USE_TARGET_BPM**: 0 (use file default), 1 (use TARGET_BPM value)
 - **SYSEX_ENABLED**: 0 (disabled), 1 (enabled)
 
 **Manual Editing:**
@@ -373,10 +387,13 @@ Remove SD card, edit `.cfg` with text editor, save, re-insert. Settings apply on
 **Tempo Control:**
 - Use TAP tempo for quick BPM matching (great for live performance)
 - Tap along with a metronome or reference track
-- Fine-tune with BPM option after tapping
-- Tempo changes are temporary (not saved to config)
-- STOP + PLAY reloads and resets tempo
-- Hold OK 2s on BPM to reset to 100%
+- Fine-tune with BPM option after tapping (0.01 BPM precision)
+- Edit whole numbers (±1.00 BPM) or decimals (±0.01 BPM) separately for precise control
+- Perfect for syncing to other devices or matching specific tempos
+- Tempo changes persist until you reload the file (not auto-saved)
+- Save to config file to make tempo changes permanent for that track
+- Hold OK 2s on BPM to reset to saved config tempo (or file default if no config)
+- STOP + PLAY reloads file and config settings
 
 **Advanced Mixing:**
 - Use Solo (S) to isolate channels while mixing
