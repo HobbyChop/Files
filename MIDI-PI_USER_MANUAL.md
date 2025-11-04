@@ -57,9 +57,6 @@ The MIDI-PI is a standalone hardware MIDI file player for musicians and synth en
 - **STOP** - Stop playback
 - **PANIC** - Emergency all-notes-off (all 16 channels)
 
-**Special Combinations:**
-- **STOP + PLAY** - Reload file and settings
-
 ---
 
 ## Playback Screen
@@ -463,3 +460,4 @@ For support, bug reports, or feature requests, visit the project repository.
 ---
 
 **End of Manual**
+
