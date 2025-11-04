@@ -222,10 +222,10 @@ Real-time 16-channel activity display. Access: Press MODE from Clock Settings.
 
 **Display:**
 ```
- 1  2  3  4  5  6  7  8
-█  ▆  █  ▄     ▂  █  ▅
- 9 10 11 12 13 14 15 16
-▃     █  ▆  ▂     ▄  █
+ 1  2  3  4  5  6  7  8   9 10 11 12 13 14 15 16
+ ▃    █  ▆ ▂  ▄  █  █  ▆  █  ▄    ▂  █ ▅ 
+
+
 ```
 
 **What It Shows:**
@@ -382,4 +382,5 @@ For support, bug reports, or feature requests, visit the project repository.
 ---
 
 **End of Manual**
+
 
